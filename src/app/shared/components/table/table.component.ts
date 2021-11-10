@@ -10,21 +10,24 @@ export class TableComponent implements OnInit {
   @Input() total: number;
   @Output() refreshAction: EventEmitter<any>;
 
-  public pageSize: number;
-  public page: number;
+  @Input() pageSize: number;
+  @Input() page: number;
+  public pageSizeOptions: number[];
 
   constructor() {
     this.refreshAction = new EventEmitter<any>();
     this.page = 1;
     this.pageSize = 2;
+    this.pageSizeOptions = [2,4,6];
   }
 
   ngOnInit(): void {}
 
-  public refreshData(){
+  public refreshData(pageEvent:any){
+    const {pageIndex, pageSize} = pageEvent;
     const paginationData = {
-      page: this.page,
-      pageSize: this.pageSize
+      pageIndex,
+      pageSize
     };
     this.refreshAction.emit(paginationData);
   }

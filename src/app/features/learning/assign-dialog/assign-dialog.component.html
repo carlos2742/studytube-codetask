@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>Assign users to {{learning.name}}</h1>
+<div mat-dialog-content>
+  <div class="container">
+    <mat-form-field appearance="outline">
+      <mat-label>Select an user</mat-label>
+      <mat-select (selectionChange)="add($event)">
+        <mat-option *ngFor="let user of users" [value]="user" [class.d-none]="isOptionSelected(user.id)">{{user.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-chip-list aria-label="Fruit selection">
+      <mat-chip
+        *ngFor="let user of userAssigned; let i = index"
+        [removable]="true"
+        (removed)="remove(i)">
+        {{user.name}}
+        <button matChipRemove>
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip>
+    </mat-chip-list>
+  </div>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]>Close</button>
+  <button mat-button (click)="assignFn()" cdkFocusInitial>Save</button>
+</div>

@@ -1,35 +1,41 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Learning, LEARNING_STATUS} from "../../../models/models";
 import {DataService} from "../../../core/services/data/data.service";
 import {FormControl} from "@angular/forms";
 import {tap} from "rxjs/operators";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {DeleteDialogComponent} from "../../../shared/components/delete-dialog/delete-dialog.component";
-import {CreateDialogComponent} from "../../../shared/components/create-dialog/create-dialog.component";
+import {DeleteDialogComponent, DeleteDialogData} from "../../../shared/components/delete-dialog/delete-dialog.component";
+import {
+  CreateDialogComponent,
+  CreateDialogData
+} from "../../../shared/components/create-dialog/create-dialog.component";
 import {LearningFormComponent} from "../learning-form/learning-form.component";
-
+import {MatDialog} from '@angular/material/dialog';
+import {AssignDialogComponent} from "../assign-dialog/assign-dialog.component";
+import {Subscription} from "rxjs";
 @Component({
   selector: 'app-learning',
   templateUrl: './learning.component.html',
   styleUrls: ['./learning.component.scss']
 })
-export class LearningComponent implements OnInit{
+export class LearningComponent implements OnInit, OnDestroy{
 
   public learnings: Learning[];
   public total: number;
   public cols: string[];
   public filter: FormControl;
 
-  private page: number;
-  private pageSize: number;
+  public page: number;
+  public pageSize: number;
 
-  constructor(private data:DataService, private modal: NgbModal) {
+  private subscription: Subscription;
+
+  constructor(private data:DataService, public dialog: MatDialog) {
     this.cols = ['name', 'archived', ''];
-    this.page = 1;
-    this.pageSize = 2;
+    this.page = 0;
+    this.pageSize = 4;
 
     this.filter = new FormControl();
-    this.filter.valueChanges.pipe(tap(value =>{
+    this.subscription = this.filter.valueChanges.pipe(tap(value =>{
       if(value.length > 3 || value === ''){
         this.loadData();
       }
@@ -40,69 +46,62 @@ export class LearningComponent implements OnInit{
     this.loadData();
   }
 
-  public loadData(){
-    const search = this.filter.value === "" ? undefined : this.filter.value;
-    this.data.learnings(this.page, this.pageSize, search).subscribe(({data, total}) =>{
-      this.learnings = data;
-      this.total = total
-    });
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
-  public updatePagination(pagination:{page: number, pageSize: number}){
-    this.page = pagination.page;
+  public loadData(){
+    const search = this.filter.value === "" ? undefined : this.filter.value;
+    const {data, total} = this.data.learnings(this.page, this.pageSize, search);
+    this.learnings = data;
+    this.total = total;
+  }
+
+  public updatePagination(pagination:{pageIndex: number, pageSize: number}){
+    this.page = pagination.pageIndex;
     this.pageSize = pagination.pageSize;
     this.loadData();
   }
 
   public showDeleteDialog(learning:Learning){
-    const modalRef = this.modal.open(DeleteDialogComponent);
-    modalRef.componentInstance.title = 'Remove Learning';
-    modalRef.componentInstance.message = `Do you want to remove the ${learning.name} learning?`;
-    modalRef.componentInstance.action = this.delete.bind(this);
-    modalRef.componentInstance.param = learning.id;
+    const data:DeleteDialogData = {
+      title: 'Remove Learning',
+      message: `Do you want to remove the ${learning.name} learning?`,
+      removeFn: this.delete.bind(this),
+      param: learning.id
+    };
+    this.dialog.open(DeleteDialogComponent, {data});
   }
 
   public showCreateDialog(){
-    const modalRef = this.modal.open(CreateDialogComponent);
-    modalRef.shown.subscribe(() => {
-      modalRef.componentInstance.addFormComponent(LearningFormComponent);
-    });
-    modalRef.componentInstance.title = 'Create Learning';
-    modalRef.componentInstance.action = this.create.bind(this);
+    const data: CreateDialogData = {
+      title: 'Create Learning',
+      saveFn: this.create.bind(this),
+      formComponent: LearningFormComponent
+    };
+    this.dialog.open(CreateDialogComponent, {data});
   }
 
-  public updateStatus(id:number, value:any){
-    const status = value.checked ? LEARNING_STATUS.ARCHIVED : LEARNING_STATUS.UNARCHIVED;
-    this.data.updateLearningStatus(id, status).subscribe();
+  public showAssignDialog(learning:Learning){
+    this.dialog.open(AssignDialogComponent,{data:learning});
   }
 
-  public isLearningArchived(learning: Learning){
+  public updateStatus(id:number, checked:boolean){
+    const status = checked ? LEARNING_STATUS.ARCHIVED : LEARNING_STATUS.UNARCHIVED;
+    this.data.updateLearningStatus(id, status);
+  }
+
+  public isArchived(learning: Learning){
     return learning.status === LEARNING_STATUS.ARCHIVED;
   }
 
   private create(entity: Learning){
-    this.data.createLearning(entity).subscribe(
-      res =>{
-        if(res.created){
-          this.loadData();
-        }
-      }
-    );
+    this.data.createLearning(entity);
   }
 
   private delete(id:number){
-    this.data.deleteLearning(id).subscribe(
-      res =>{
-        if(res.deleted){
-          this.loadData();
-        }else{
-          //todo show warning
-        }
-      },
-      error => {
-        //todo show error
-      });
+    if(this.data.deleteLearning(id)){
+      this.loadData();
+    }
   }
-
-
 }

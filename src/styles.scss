@@ -9,3 +9,22 @@
 .error{
   color: red;
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.search{
+  .mat-form-field-appearance-outline .mat-form-field-outline{
+    color: #45494A;
+  }
+  .mat-form-field-label{
+    color: #45494A !important;
+  }
+}
+
+.table{
+  color: #fff;
+  background-color: #424242;
+  border-bottom: 2px solid #ccc;
+  margin-bottom: 0;
+}

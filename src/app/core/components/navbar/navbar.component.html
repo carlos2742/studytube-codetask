@@ -1,4 +1,4 @@
-<div class="mb-3 mt-4 container">
-  <button routerLink="/users">Users</button>
-  <button routerLink="/learnings">Learnings</button>
-</div>
+<mat-toolbar color="primary">
+  <button mat-button routerLink="/users" [class.nav-button-selected]="isSelected('/users')">Users</button>
+  <button mat-button routerLink="/learnings" [class.nav-button-selected]="isSelected('/learnings')">Learnings</button>
+</mat-toolbar>

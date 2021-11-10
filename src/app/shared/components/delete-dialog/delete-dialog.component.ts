@@ -1,5 +1,12 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+
+export type DeleteDialogData = {
+  title:string;
+  message:string;
+  removeFn:Function;
+  param:any;
+}
 
 @Component({
   selector: 'delete-dialog',
@@ -8,18 +15,13 @@ import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
 })
 export class DeleteDialogComponent implements OnInit {
 
-  @Input() title:string;
-  @Input() message:string;
-  @Input() action:Function;
-  @Input() param:any;
-
-  constructor(public activeModal: NgbActiveModal) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: DeleteDialogData) { }
 
   ngOnInit(): void {}
 
-  public execAction(){
-    this.action(this.param);
-    this.activeModal.close('Close click')
+  public execRemoveFn(){
+    const {param, removeFn} = this.data;
+    removeFn(param);
   }
 
 }

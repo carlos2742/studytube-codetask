@@ -3,13 +3,13 @@ export type User = {
   avatar: string;
   name: string;
   email:string;
-  learnings: number[]
 };
 
 export type Learning = {
   id: number;
   name: string;
   status: LEARNING_STATUS;
+  users: number[];
 };
 
 export enum LEARNING_STATUS{

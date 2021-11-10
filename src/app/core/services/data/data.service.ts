@@ -30,52 +30,56 @@ export class DataService {
     });
   }
 
-  public learnings(page: number, pageSize: number, search?:string): Observable<{data: Learning[], total:number}>{
-    return new Observable(observer => {
-      const list = search === undefined || search === null ? this.learningData : this.learningData.filter(learning => learning.name.toLowerCase().includes(search.toLowerCase()));
-      const start = (page - 1) * pageSize;
-      const response = {
-        data: list.slice(start,start+pageSize),
-        total: list.length
-      };
-      observer.next(response)
-    });
+  public getAllUsers(): User[]{
+    return this.userData;
   }
 
-  public createLearning(learning: Learning): Observable<{created:boolean}>{
-    return new Observable(observer =>{
-      learning.id = this.learningData.length+1;
-      this.learningData.push(learning);
-      observer.next({created:true});
-    });
+  public learnings(pageIndex: number, pageSize: number, search?:string): {data: Learning[], total:number}{
+    const list = search === undefined || search === null ? this.learningData : this.learningData.filter(learning => learning.name.toLowerCase().includes(search.toLowerCase()));
+    const start = pageIndex * pageSize;
+    return {
+      data: list.slice(start,start+pageSize),
+      total: list.length
+    };
   }
 
-  public updateLearningStatus(id:number, status: LEARNING_STATUS){
-    return new Observable(observer =>{
-      const learning = this.getLearning(id);
-      if(learning){
-        learning.status = status;
-        observer.next({updated:true})
-      }else{
-        observer.error('Element not found');
+  public assignLearning(learningId: number, usersId: number[]){
+    const learning = this.learningData.find(learning => learning.id === learningId);
+    if(learning){
+      learning.users = usersId;
+    }
+  }
+
+  public getUserAssigned(usersId: number[]){
+    return this.userData.filter(user => usersId.includes(user.id));
+  }
+
+  public createLearning(learning: Learning): boolean{
+    learning.id = this.learningData.length+1;
+    learning.users = [];
+    this.learningData.push(learning);
+    return true;
+  }
+
+  public updateLearningStatus(id:number, status: LEARNING_STATUS):boolean{
+    const learning = this.getLearning(id);
+    if(learning){
+      learning.status = status;
+      return true;
+    }else{
+      return false
+    }
+  }
+
+  public deleteLearning(id:number): boolean{
+    const index = this.getLearningIndex(id);
+    if(index > -1){
+      const deletedElements = this.learningData.splice(index,1);
+      if(deletedElements.length > 0){
+        return true;
       }
-    });
-  }
-
-  public deleteLearning(id:number): Observable<{deleted:boolean}>{
-    return new Observable( observer => {
-      const index = this.getLearningIndex(id);
-      if(index > -1){
-        const deletedElements = this.learningData.splice(index,1);
-        if(deletedElements.length > 0){
-          observer.next({deleted:true})
-        }else {
-          observer.next({deleted: false});
-        }
-      }else{
-        observer.error('Element not found');
-      }
-    });
+    }
+    return false;
   }
 
   private getLearning(id:number): Learning | undefined{

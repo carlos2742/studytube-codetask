@@ -15,7 +15,7 @@ export class LearningFormComponent implements IFormComponent {
   constructor(private formBuilder: FormBuilder) {
     this.form = this.formBuilder.group({
       name: new FormControl('',[Validators.required]),
-      status: new FormControl(LEARNING_STATUS.ARCHIVED),
+      status: new FormControl(LEARNING_STATUS.ARCHIVED, [Validators.required]),
     });
   }
 

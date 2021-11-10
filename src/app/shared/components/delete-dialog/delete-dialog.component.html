@@ -1,13 +1,8 @@
-<div class="modal-header">
-  <h4 class="modal-title">{{title}}</h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
-    <span aria-hidden="true">&times;</span>
-  </button>
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div mat-dialog-content>
+  <p>{{data.message}}</p>
 </div>
-<div class="modal-body">
-  <p>{{message}}</p>
-</div>
-<div class="modal-footer">
-  <button type="button" class="btn btn-secondary" (click)="activeModal.close('Close click')">Close</button>
-  <button type="button" class="btn btn-primary" (click)="execAction()">Remove</button>
+<div mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]>Close</button>
+  <button mat-button [mat-dialog-close] (click)="execRemoveFn()" cdkFocusInitial>Remove</button>
 </div>

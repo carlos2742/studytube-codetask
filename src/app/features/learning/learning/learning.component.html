@@ -1,29 +1,28 @@
 <h2>Learnings</h2>
-<div class="d-flex justify-content-between align-items-baseline mt-3 mb-3">
-  <form class="">
-    <div class="form-group form-inline">
-      Name search: <input class="form-control ml-2" type="text" [formControl]="filter"/>
-    </div>
-  </form>
-  <button type="button" class="btn-primary btn" (click)="showCreateDialog()">Create</button>
+<div class="d-flex justify-content-between align-items-baseline mt-3 mt-3">
+  <div class="search">
+    <mat-form-field appearance="outline">
+      <mat-label>Name search</mat-label>
+      <input matInput placeholder="Placeholder" type="text" [formControl]="filter">
+    </mat-form-field>
+  </div>
+  <button type="button" mat-raised-button (click)="showCreateDialog()">Create</button>
 </div>
 
 <div *ngIf="total > 0">
-  <app-table [total]="total" (refreshAction)="updatePagination($event)">
+  <app-table [total]="total" [page]="page" [pageSize]="pageSize" (refreshAction)="updatePagination($event)">
     <tr header>
       <th scope="col" *ngFor="let col of cols; let i = index" [class.text-center]="i === 1">{{col | titlecase}}</th>
     </tr>
     <tbody body>
-    <tr *ngFor="let learning of learnings; let i = index">
-      <td>{{learning.name}}</td>
-      <td class="text-center">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="flexCheckDefault" [checked]="isLearningArchived(learning)" (change)="updateStatus(learning.id,$event.currentTarget)">
-        </div>
+    <tr *ngFor="let learning of learnings">
+      <td class="pt-4">{{learning.name}}</td>
+      <td class="text-center pt-4">
+        <mat-checkbox  class="example-margin" [checked]="isArchived(learning)" (change)="updateStatus(learning.id,$event.checked)"></mat-checkbox>
       </td>
       <td class="text-center">
-        <button type="button" class="btn btn-light"><i class="fas fa-user-plus"></i></button>
-        <button type="button" class="btn btn-light" (click)="showDeleteDialog(learning)"><i class="fas fa-trash"></i></button>
+        <button type="button" mat-icon-button (click)="showAssignDialog(learning)"><i class="fas fa-user-plus"></i></button>
+        <button type="button" mat-icon-button (click)="showDeleteDialog(learning)"><i class="fas fa-trash"></i></button>
       </td>
     </tr>
     </tbody>

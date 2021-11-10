@@ -1,14 +1,18 @@
-<form action="" [formGroup]="form" class="pl-3">
-  <div class="form-group form-inline">
-    <label for="name">Name: </label>
-    <input id="name" class="form-control ml-2" type="text" formControlName="name" />
-    <div *ngIf="name && name.invalid && name.touched" class="ml-2 error">Required</div>
+<form action="" [formGroup]="form">
+  <div class="pb-2">
+    <mat-form-field appearance="outline">
+      <mat-label>Name*</mat-label>
+      <input matInput placeholder="Placeholder" formControlName="name">
+      <mat-error *ngIf="name && name.invalid">You must enter a Name</mat-error>
+    </mat-form-field>
   </div>
-  <div class="form-group form-inline">
-    <label for="status">Status: </label>
-    <select id="status" class="form-control ml-2" formControlName="status">
-      <option [value]="0">Archived</option>
-      <option [value]="1">Active</option>
-    </select>
+  <div>
+    <mat-form-field appearance="outline">
+      <mat-label>Choose a status</mat-label>
+      <mat-select name="status" formControlName="status">
+        <mat-option [value]="0">Archived</mat-option>
+        <mat-option [value]="1">Active</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
 </form>

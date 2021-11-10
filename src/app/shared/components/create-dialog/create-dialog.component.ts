@@ -1,19 +1,24 @@
 import {
-  AfterViewInit,
   Component,
   ComponentFactoryResolver,
-  ComponentRef,
-  Input, OnDestroy,
-  OnInit,
+  ComponentRef, Inject,
+  OnDestroy,
   Type,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
-import {NgbActiveModal} from "@ng-bootstrap/ng-bootstrap";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {Subscription} from "rxjs";
 
 export interface IFormComponent{
   isValid(): boolean;
   getValues(): any;
+}
+
+export type CreateDialogData = {
+  title:string;
+  saveFn:Function;
+  formComponent:Type<IFormComponent>;
 }
 
 @Component({
@@ -23,25 +28,32 @@ export interface IFormComponent{
 })
 export class CreateDialogComponent implements OnDestroy{
 
-  @Input() title:string;
-  @Input() action:Function;
-
   @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
 
   private componentRef: ComponentRef<IFormComponent>;
-
-  constructor(public activeModal: NgbActiveModal, private componentFactoryResolver: ComponentFactoryResolver) { }
+  private subscription: Subscription;
+  constructor(
+    public dialogRef: MatDialogRef<CreateDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: CreateDialogData,
+    private componentFactoryResolver: ComponentFactoryResolver)
+  {
+    this.subscription = this.dialogRef.afterOpened().subscribe(()=>{
+      const {formComponent} = this.data;
+      this.addFormComponent(formComponent);
+    });
+  }
 
   ngOnDestroy(): void {
     this.removeFormComponent();
+    this.subscription.unsubscribe();
   }
 
-  public addFormComponent(componentClass: Type<IFormComponent>){
+  private addFormComponent(componentClass: Type<IFormComponent>){
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
     this.componentRef = this.container.createComponent(componentFactory);
   }
 
-  public removeFormComponent(){
+  private removeFormComponent(){
     const index = this.container.indexOf(this.componentRef.hostView);
     this.container.remove(index);
   }
@@ -50,11 +62,12 @@ export class CreateDialogComponent implements OnDestroy{
     return this.componentRef ? this.componentRef.instance : undefined;
   }
 
-  public execAction(){
+  public execSaveFn(){
     if(this.form?.isValid()){
       const formValue = this.form?.getValues();
-      this.action(formValue);
-      this.activeModal.close('Close click')
+      const {saveFn} = this.data;
+      saveFn(formValue);
+      this.dialogRef.close();
     }
   }
 }
