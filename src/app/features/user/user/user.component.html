@@ -1,1 +1,6 @@
-<p>users works!</p>
+<ul *ngIf="total > 0">
+  <li *ngFor="let user of users">
+    <div>{{user.name}}</div>
+    <div>{{user.email}}</div>
+  </li>
+</ul>
