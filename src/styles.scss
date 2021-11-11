@@ -44,3 +44,12 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     width: 100px;
   }
 }
+
+.table-container{
+  position: relative;
+  .create-button-container{
+    position: absolute;
+    right: 0;
+    top: 20px;
+  }
+}

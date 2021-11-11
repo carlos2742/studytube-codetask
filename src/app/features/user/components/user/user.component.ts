@@ -1,8 +1,5 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {UserService, User} from "../../../../core/services/user/user.service";
-import {Subscription} from "rxjs";
-import {FormControl} from "@angular/forms";
-import {tap} from "rxjs/operators";
 import {
   DeleteDialogComponent,
   DeleteDialogData
@@ -15,55 +12,45 @@ import {
 import {UserFormComponent} from "../user-form/user-form.component";
 import {LearningService} from "../../../../core/services/learning/learning.service";
 import {LearningDialogComponent} from "../learning-dialog/learning-dialog.component";
+import {TableConfig} from "../../../../shared/components/table/table.component";
 
 @Component({
   selector: 'app-users',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss']
 })
-export class UserComponent implements OnInit, OnDestroy {
+export class UserComponent {
 
   public entities: User[];
-  public total: number;
+  public tableConfig: TableConfig;
   public cols: string[];
-  public filter: FormControl;
 
-  public page: number;
-  public pageSize: number;
-
-  private _subscription: Subscription;
+  private _pageIndex: number;
+  private _pageSize: number;
+  private _filter:string;
 
   constructor(private _learning:LearningService, private _user:UserService, public dialog: MatDialog) {
     this.cols = ['avatar', 'name', 'email', ''];
-    this.page = 0;
-    this.pageSize = 4;
-
-    this.filter = new FormControl();
-    this._subscription = this.filter.valueChanges.pipe(tap(value =>{
-      if(this.filter.enabled && (value.length > 3 || value === '')){
-        this.loadData();
-      }
-    })).subscribe();
-  }
-
-  ngOnInit(): void {
-    this.loadData();
-  }
-
-  ngOnDestroy(): void {
-    this._subscription.unsubscribe();
+    this.tableConfig = {
+      total: 0,
+      pageSizeOptions: [2,4,6],
+      filterLabel: 'Name/Email search'
+    };
+    this._pageIndex = 0;
+    this._pageSize = 0;
+    this._filter = '';
   }
 
   public loadData(){
-    const search = this.filter.value === "" ? undefined : this.filter.value;
-    const {data, total} = this._user.list(this.page, this.pageSize,search);
+    const {data, total} = this._user.list(this._pageIndex, this._pageSize, this._filter);
     this.entities = data;
-    this.total = total;
+    this.tableConfig.total = total;
   }
 
-  public updatePagination(pagination:{pageIndex: number, pageSize: number}){
-    this.page = pagination.pageIndex;
-    this.pageSize = pagination.pageSize;
+  public updateDataConfig(config:{pageIndex: number, pageSize: number, filter:string}){
+    this._pageIndex = config.pageIndex;
+    this._pageSize = config.pageSize;
+    this._filter = config.filter;
     this.loadData();
   }
 

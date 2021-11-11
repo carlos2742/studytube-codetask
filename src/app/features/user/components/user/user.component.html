@@ -1,16 +1,11 @@
 <h2>Users</h2>
-<div class="d-flex justify-content-between align-items-baseline mt-3 mt-3">
-  <div class="search">
-    <mat-form-field appearance="outline">
-      <mat-label>Name/Email search</mat-label>
-      <input matInput placeholder="Placeholder" type="text" [formControl]="filter">
-    </mat-form-field>
-  </div>
-  <button type="button" mat-raised-button (click)="showCreateDialog()">Create</button>
-</div>
 
-<div>
-  <app-table [total]="total" [page]="page" [pageSize]="pageSize" (refreshAction)="updatePagination($event)">
+
+<div class="table-container">
+  <div class="create-button-container">
+    <button type="button" mat-raised-button (click)="showCreateDialog()">Create</button>
+  </div>
+  <app-table [config]="tableConfig" (refreshAction)="updateDataConfig($event)">
     <tr header>
       <th scope="col" *ngFor="let col of cols; let i = index" [class.text-center]="i > 0">{{col | titlecase}}</th>
     </tr>

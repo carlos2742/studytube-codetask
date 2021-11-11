@@ -1,35 +1,69 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {FormControl} from "@angular/forms";
+import {tap} from "rxjs/operators";
+import {Subscription} from "rxjs";
+
+export interface TableConfig {
+  total:number;
+  pageSizeOptions: number[];
+  filterLabel: string;
+}
 
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss']
 })
-export class TableComponent implements OnInit {
+export class TableComponent implements OnInit, OnDestroy {
 
-  @Input() total: number;
+  @Input() config: TableConfig;
   @Output() refreshAction: EventEmitter<any>;
 
-  @Input() pageSize: number;
-  @Input() page: number;
-  public pageSizeOptions: number[];
+  public pageSize: number;
+  public pageIndex: number;
+  public filter: FormControl;
+
+  private _subscription: Subscription;
 
   constructor() {
     this.refreshAction = new EventEmitter<any>();
-    this.page = 1;
-    this.pageSize = 2;
-    this.pageSizeOptions = [2,4,6];
+    this.pageIndex = 0;
+    this.filter = new FormControl();
+    this._initFilterControl();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.pageSize = this.config.pageSizeOptions[0];
+    this._refreshData();
+  }
 
-  public refreshData(pageEvent:any){
+  ngOnDestroy(): void {
+    if(this._subscription)
+      this._subscription.unsubscribe();
+  }
+
+  public updatePaginator(pageEvent:any){
     const {pageIndex, pageSize} = pageEvent;
-    const paginationData = {
-      pageIndex,
-      pageSize
+    this.pageIndex = pageIndex;
+    this.pageSize = pageSize;
+    this._refreshData();
+  }
+
+  private _refreshData(){
+    const config = {
+      pageIndex: this.pageIndex,
+      pageSize: this.pageSize,
+      filter: this.filter.value
     };
-    this.refreshAction.emit(paginationData);
+    this.refreshAction.emit(config);
+  }
+
+  private _initFilterControl(){
+    this._subscription = this.filter.valueChanges.pipe(tap(value =>{
+      if(value.length > 3 || value === ''){
+        this._refreshData();
+      }
+    })).subscribe();
   }
 
 }
