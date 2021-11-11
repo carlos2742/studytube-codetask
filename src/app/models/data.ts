@@ -3,19 +3,19 @@ import {Learning, LEARNING_STATUS, User} from "./models";
 export const users: User[] = [
   {
     id: 1,
-    avatar: '',
+    avatar: 'h1',
     name: 'John Doe',
     email: 'jdoe@gmail.com'
   },
   {
     id: 2,
-    avatar: '',
+    avatar: 'w1',
     name: 'Ariella Valentine',
     email: 'avalentine@gmail.com'
   },
   {
     id: 3,
-    avatar: '',
+    avatar: 'h2',
     name: 'Saul Fields',
     email: 'sfields@gmail.com'
   }

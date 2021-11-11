@@ -1,17 +1,17 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Learning, LEARNING_STATUS} from "../../../models/models";
-import {DataService} from "../../../core/services/data/data.service";
+import {Learning, LEARNING_STATUS} from "../../../../models/models";
 import {FormControl} from "@angular/forms";
 import {tap} from "rxjs/operators";
-import {DeleteDialogComponent, DeleteDialogData} from "../../../shared/components/delete-dialog/delete-dialog.component";
+import {DeleteDialogComponent, DeleteDialogData} from "../../../../shared/components/delete-dialog/delete-dialog.component";
 import {
   CreateDialogComponent,
   CreateDialogData
-} from "../../../shared/components/create-dialog/create-dialog.component";
+} from "../../../../shared/components/create-dialog/create-dialog.component";
 import {LearningFormComponent} from "../learning-form/learning-form.component";
 import {MatDialog} from '@angular/material/dialog';
 import {AssignDialogComponent} from "../assign-dialog/assign-dialog.component";
 import {Subscription} from "rxjs";
+import {LearningService} from "../../../../core/services/learning/learning.service";
 @Component({
   selector: 'app-learning',
   templateUrl: './learning.component.html',
@@ -19,7 +19,7 @@ import {Subscription} from "rxjs";
 })
 export class LearningComponent implements OnInit, OnDestroy{
 
-  public learnings: Learning[];
+  public entities: Learning[];
   public total: number;
   public cols: string[];
   public filter: FormControl;
@@ -27,16 +27,16 @@ export class LearningComponent implements OnInit, OnDestroy{
   public page: number;
   public pageSize: number;
 
-  private subscription: Subscription;
+  private _subscription: Subscription;
 
-  constructor(private data:DataService, public dialog: MatDialog) {
+  constructor(private _learning: LearningService, public dialog: MatDialog) {
     this.cols = ['name', 'archived', ''];
     this.page = 0;
     this.pageSize = 4;
 
     this.filter = new FormControl();
-    this.subscription = this.filter.valueChanges.pipe(tap(value =>{
-      if(value.length > 3 || value === ''){
+    this._subscription = this.filter.valueChanges.pipe(tap(value =>{
+      if(!this.filter.disabled && (value.length > 3 || value === '')){
         this.loadData();
       }
     })).subscribe();
@@ -47,13 +47,13 @@ export class LearningComponent implements OnInit, OnDestroy{
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this._subscription.unsubscribe();
   }
 
   public loadData(){
     const search = this.filter.value === "" ? undefined : this.filter.value;
-    const {data, total} = this.data.learnings(this.page, this.pageSize, search);
-    this.learnings = data;
+    const {data, total} = this._learning.list(this.page, this.pageSize, search);
+    this.entities = data;
     this.total = total;
   }
 
@@ -67,7 +67,7 @@ export class LearningComponent implements OnInit, OnDestroy{
     const data:DeleteDialogData = {
       title: 'Remove Learning',
       message: `Do you want to remove the ${learning.name} learning?`,
-      removeFn: this.delete.bind(this),
+      removeFn: this._delete.bind(this),
       param: learning.id
     };
     this.dialog.open(DeleteDialogComponent, {data});
@@ -76,7 +76,7 @@ export class LearningComponent implements OnInit, OnDestroy{
   public showCreateDialog(){
     const data: CreateDialogData = {
       title: 'Create Learning',
-      saveFn: this.create.bind(this),
+      saveFn: this._create.bind(this),
       formComponent: LearningFormComponent
     };
     this.dialog.open(CreateDialogComponent, {data});
@@ -88,19 +88,21 @@ export class LearningComponent implements OnInit, OnDestroy{
 
   public updateStatus(id:number, checked:boolean){
     const status = checked ? LEARNING_STATUS.ARCHIVED : LEARNING_STATUS.UNARCHIVED;
-    this.data.updateLearningStatus(id, status);
+    this._learning.updateStatus(id, status);
   }
 
   public isArchived(learning: Learning){
     return learning.status === LEARNING_STATUS.ARCHIVED;
   }
 
-  private create(entity: Learning){
-    this.data.createLearning(entity);
+  private _create(entity: Learning){
+    if(this._learning.create(entity)){
+      this.loadData();
+    }
   }
 
-  private delete(id:number){
-    if(this.data.deleteLearning(id)){
+  private _delete(id:number){
+    if(this._learning.remove(id)){
       this.loadData();
     }
   }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import {IFormComponent} from "../../../shared/components/create-dialog/create-dialog.component";
+import {IFormComponent} from "../../../../shared/components/create-dialog/create-dialog.component";
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {LEARNING_STATUS} from "../../../models/models";
+import {LEARNING_STATUS} from "../../../../models/models";
 
 @Component({
   selector: 'app-learning-form',

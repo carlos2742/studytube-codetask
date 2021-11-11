@@ -14,11 +14,11 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .search{
-  .mat-form-field-appearance-outline .mat-form-field-outline{
-    color: #45494A;
+  .mat-form-field-disabled.mat-form-field-appearance-outline .mat-form-field-outline, .mat-form-field-disabled .mat-form-field-label{
+    color: rgb(69 73 74 / 21%) !important
   }
-  .mat-form-field-label{
-    color: #45494A !important;
+  .mat-form-field-appearance-outline .mat-form-field-outline, .mat-form-field-label{
+    color: #45494A;
   }
 }
 
@@ -27,4 +27,20 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background-color: #424242;
   border-bottom: 2px solid #ccc;
   margin-bottom: 0;
+}
+.mat-chip-container{
+  min-width: 400px;
+  min-height: 200px;
+  padding: 0;
+}
+.avatar{
+  &.small{
+    width: 25px;
+  }
+  &.medium{
+    width: 50px;
+  }
+  &.big{
+    width: 100px;
+  }
 }

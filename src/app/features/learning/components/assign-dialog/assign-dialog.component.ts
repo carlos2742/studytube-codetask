@@ -1,8 +1,9 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {Learning, User} from "../../../models/models";
+import {Learning, User} from "../../../../models/models";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {DataService} from "../../../core/services/data/data.service";
 import {MatSelect} from "@angular/material/select";
+import {LearningService} from "../../../../core/services/learning/learning.service";
+import {UserService} from "../../../../core/services/user/user.service";
 
 @Component({
   selector: 'app-assign-dialog',
@@ -16,11 +17,12 @@ export class AssignDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<AssignDialogComponent>,
-    private data: DataService,
-    @Inject(MAT_DIALOG_DATA) public learning: Learning) {
+    @Inject(MAT_DIALOG_DATA) public learning: Learning,
+    private _learning: LearningService,
+    private _user: UserService) {
 
-    this.userAssigned = this.data.getUserAssigned(learning.users);
-    this.users = this.data.getAllUsers();
+    this.userAssigned = this._user.findManyById(learning.users);
+    this.users = this._user.all();
   }
 
   ngOnInit(): void {}
@@ -33,7 +35,7 @@ export class AssignDialogComponent implements OnInit {
     return this.userAssignedIds.includes(userId);
   }
 
-  public add(event:any){
+  public assign(event:any){
     const {source, value} = event;
     this.userAssigned.push(value);
     (source as MatSelect).value = null
@@ -43,8 +45,8 @@ export class AssignDialogComponent implements OnInit {
     this.userAssigned.splice(index,1);
   }
 
-  public assignFn(){
-    this.data.assignLearning(this.learning.id, this.userAssignedIds);
+  public save(){
+    this._learning.assignUsers(this.learning.id, this.userAssignedIds);
     this.dialogRef.close();
   }
 }

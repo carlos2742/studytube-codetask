@@ -1,8 +1,6 @@
-export type User = {
-  id: number;
-  avatar: string;
-  name: string;
-  email:string;
+export enum LEARNING_STATUS{
+  ARCHIVED,
+  UNARCHIVED
 };
 
 export type Learning = {
@@ -12,7 +10,9 @@ export type Learning = {
   users: number[];
 };
 
-export enum LEARNING_STATUS{
-  ARCHIVED,
-  UNARCHIVED
+export type User = {
+  id: number;
+  avatar: string;
+  name: string;
+  email:string;
 };

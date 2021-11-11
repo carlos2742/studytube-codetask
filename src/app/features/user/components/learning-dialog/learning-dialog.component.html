@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Learnings assigned to {{user.name}}</h1>
+<div mat-dialog-content>
+  <div class="mat-chip-container">
+    <mat-chip-list aria-label="Learning selection" *ngIf="learnings.length > 0; else empty">
+      <mat-chip *ngFor="let learning of learnings" [selectable]="false" [disableRipple]="true">
+        {{learning.name}}
+      </mat-chip>
+    </mat-chip-list>
+    <ng-template #empty>
+      <h3 class="pt-5 text-center">There are no learnings selected</h3>
+    </ng-template>
+  </div>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]>Close</button>
+</div>

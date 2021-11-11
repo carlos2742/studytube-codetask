@@ -2,10 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {SharedModule} from "../../shared/shared.module";
 import { LearningRoutingModule } from './learning-routing.module';
-import { LearningComponent } from './learning/learning.component';
-import { LearningFormComponent } from './learning-form/learning-form.component';
-import {AssignDialogComponent} from "./assign-dialog/assign-dialog.component";
-import {MatChipsModule} from "@angular/material/chips";
+import { LearningComponent } from './components/learning/learning.component';
+import { LearningFormComponent } from './components/learning-form/learning-form.component';
+import {AssignDialogComponent} from "./components/assign-dialog/assign-dialog.component";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 
 
@@ -20,7 +19,6 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
     CommonModule,
     SharedModule,
     LearningRoutingModule,
-    MatChipsModule,
     MatCheckboxModule
   ]
 })

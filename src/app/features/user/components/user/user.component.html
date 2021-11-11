@@ -1,0 +1,37 @@
+<h2>Users</h2>
+<div class="d-flex justify-content-between align-items-baseline mt-3 mt-3">
+  <div class="search">
+    <mat-form-field appearance="outline">
+      <mat-label>Name/Email search</mat-label>
+      <input matInput placeholder="Placeholder" type="text" [formControl]="filter">
+    </mat-form-field>
+  </div>
+  <button type="button" mat-raised-button (click)="showCreateDialog()">Create</button>
+</div>
+
+<div>
+  <app-table [total]="total" [page]="page" [pageSize]="pageSize" (refreshAction)="updatePagination($event)">
+    <tr header>
+      <th scope="col" *ngFor="let col of cols; let i = index" [class.text-center]="i > 0">{{col | titlecase}}</th>
+    </tr>
+    <tbody body>
+    <tr *ngFor="let entity of entities">
+      <td class="pt-4">
+        <img [appAvatar]="entity.avatar" alt="{{entity.avatar}}">
+      </td>
+      <td class="text-center pt-4">{{entity.name}}</td>
+      <td class="text-center pt-4">{{entity.email}}</td>
+      <td class="text-center pt-4">
+        <button type="button" mat-icon-button
+                matTooltip="Learnings"
+                matTooltipPosition="left"
+                (click)="showLearningDialog(entity)"><i class="fas fa-book"></i></button>
+        <button type="button" mat-icon-button
+                matTooltip="Remove"
+                matTooltipPosition="right"
+                (click)="showDeleteDialog(entity)"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>
+    </tbody>
+  </app-table>
+</div>

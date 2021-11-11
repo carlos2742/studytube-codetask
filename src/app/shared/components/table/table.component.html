@@ -1,13 +1,21 @@
-<table class="table table-striped">
-  <thead>
-  <ng-content select="[header]"></ng-content>
-  </thead>
-  <ng-content select="[body]"></ng-content>
-</table>
+<div *ngIf="total > 0; else empty">
+  <table class="table table-striped">
+    <thead>
+    <ng-content select="[header]"></ng-content>
+    </thead>
+    <ng-content select="[body]"></ng-content>
+  </table>
 
-<mat-paginator [length]="total"
-               [pageSize]="pageSize"
-               [pageSizeOptions]="pageSizeOptions"
-               (page)="refreshData($event)"
-               aria-label="Select page">
-</mat-paginator>
+  <mat-paginator [length]="total"
+                 [pageSize]="pageSize"
+                 [pageSizeOptions]="pageSizeOptions"
+                 (page)="refreshData($event)"
+                 aria-label="Select page">
+  </mat-paginator>
+</div>
+<ng-template #empty>
+  <div class="text-center">
+    <h1>Results not found</h1>
+  </div>
+</ng-template>
+

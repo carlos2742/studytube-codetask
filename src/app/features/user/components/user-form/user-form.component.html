@@ -1,0 +1,21 @@
+<form action="" [formGroup]="form">
+  <div class="pb-2 text-center">
+    <button [class.invisible]="!hasPrev" mat-icon-button type="button" (click)="prevAvatar()"><mat-icon>arrow_back_ios</mat-icon></button>
+    <img [appAvatar]="avatar ? avatar.value : ''" avatarSize="big" alt="">
+    <button [class.invisible]="!hasNext" mat-icon-button type="button" (click)="nextAvatar()"><mat-icon>arrow_forward_ios</mat-icon></button>
+  </div>
+  <div class="pb-2">
+    <mat-form-field appearance="outline">
+      <mat-label>Name*</mat-label>
+      <input matInput placeholder="Placeholder" formControlName="name">
+      <mat-error *ngIf="name && name.invalid">You must enter a Name</mat-error>
+    </mat-form-field>
+  </div>
+  <div class="pb-2">
+    <mat-form-field appearance="outline">
+      <mat-label>Email*</mat-label>
+      <input matInput placeholder="Placeholder" formControlName="email">
+      <mat-error *ngIf="email && email.invalid">{{emailErrorMessage}}</mat-error>
+    </mat-form-field>
+  </div>
+</form>
