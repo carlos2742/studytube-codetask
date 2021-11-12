@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {UserService, User} from "../../../../core/services/user/user.service";
+import {UserService} from "../../../../core/services/user/user.service";
 import {
   DeleteDialogComponent,
   DeleteDialogData
@@ -13,9 +13,10 @@ import {UserFormComponent} from "../user-form/user-form.component";
 import {LearningService} from "../../../../core/services/learning/learning.service";
 import {LearningDialogComponent} from "../learning-dialog/learning-dialog.component";
 import {TableConfig} from "../../../../shared/components/table/table.component";
+import {User} from "../../../../models/models";
 
 @Component({
-  selector: 'app-users',
+  selector: 'user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss']
 })
@@ -33,7 +34,7 @@ export class UserComponent {
     this.cols = ['avatar', 'name', 'email', ''];
     this.tableConfig = {
       total: 0,
-      pageSizeOptions: [2,4,6],
+      pageSizeOptions: [4,6,8],
       filterLabel: 'Name/Email search'
     };
     this._pageIndex = 0;

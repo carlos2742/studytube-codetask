@@ -11,7 +11,7 @@ import {AssignDialogComponent} from "../assign-dialog/assign-dialog.component";
 import {LearningService} from "../../../../core/services/learning/learning.service";
 import {TableConfig} from "../../../../shared/components/table/table.component";
 @Component({
-  selector: 'app-learning',
+  selector: 'learning',
   templateUrl: './learning.component.html',
   styleUrls: ['./learning.component.scss']
 })
@@ -29,7 +29,7 @@ export class LearningComponent{
     this.cols = ['name', 'archived', ''];
     this.tableConfig = {
       total: 0,
-      pageSizeOptions: [2,4,6],
+      pageSizeOptions: [4,6,8],
       filterLabel: 'Name search'
     };
     this._pageIndex = 0;

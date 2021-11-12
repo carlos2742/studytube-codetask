@@ -31,7 +31,7 @@ describe('LearningComponent', () => {
   it('Check table config initialization', () => {
     const config = {
       total: 0,
-      pageSizeOptions: [2,4,6],
+      pageSizeOptions: [4,6,8],
       filterLabel: 'Name search'
     };
     expect(component.tableConfig).toEqual(config);

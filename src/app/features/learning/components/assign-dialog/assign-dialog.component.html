@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>Assign users to {{learning.name}}</h1>
 <div mat-dialog-content>
   <div class="mat-chip-container">
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="w-100">
       <mat-label>Select an user</mat-label>
       <mat-select (selectionChange)="assign($event)">
         <mat-option *ngFor="let user of users" [value]="user" [class.d-none]="isOptionSelected(user.id)">{{user.name}}</mat-option>

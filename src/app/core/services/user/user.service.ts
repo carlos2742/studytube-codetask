@@ -1,11 +1,5 @@
 import {Inject, Injectable} from '@angular/core';
-
-export type User = {
-  id: string;
-  avatar: string;
-  name: string;
-  email:string;
-};
+import {User} from "../../../models/models";
 
 export const ID = () => Math.random().toString(36).substr(2,9);
 

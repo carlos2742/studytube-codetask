@@ -14,11 +14,8 @@ import {MatChipsModule} from "@angular/material/chips";
 import {MatIconModule} from "@angular/material/icon";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
-const auxLearning: Learning = {...learnings[0]};
-
 export class MockLearningService{
   public assignUsers(id:string, usersId: string[]):boolean{
-    auxLearning.users = usersId;
     return true;
   }
   public findByUserId(userId:string):Learning[]{
@@ -58,7 +55,7 @@ describe('AssignDialogComponent', () => {
       ],
       declarations: [ AssignDialogComponent ],
       providers:[
-        {provide:MAT_DIALOG_DATA, useValue: auxLearning},
+        {provide:MAT_DIALOG_DATA, useValue: {...learnings[0]}},
         {provide:MatDialogRef, useClass: MockMatDialogRef},
         {provide:LearningService, useClass: MockLearningService},
         {provide:UserService, useClass: MockUserService}
@@ -87,17 +84,10 @@ describe('AssignDialogComponent', () => {
   });
 
   it('Should deselect an assigned user',()=>{
+    expect(component.userAssigned.length).toEqual(2);
     const assignedCancelBtn = compiled.querySelector('mat-chip button');
     assignedCancelBtn.click();
     expect(component.userAssigned.length).toEqual(1);
   });
 
-  it('Should deselect an assigned user and update learning',()=>{
-    const assignedCancelBtn = compiled.querySelector('mat-chip button');
-    assignedCancelBtn.click();
-    expect(component.userAssigned.length).toEqual(1);
-    const saveButton = compiled.querySelector('#save');
-    saveButton.click();
-    expect(auxLearning.users.length).toEqual(1);
-  });
 });
