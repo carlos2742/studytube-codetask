@@ -22,7 +22,7 @@ export class AssignDialogComponent implements OnInit {
     private _user: UserService) {
 
     this.userAssigned = this._user.findManyById(learning.users);
-    this.users = this._user.all();
+    this.users = this._user.all;
   }
 
   ngOnInit(): void {}
@@ -31,7 +31,7 @@ export class AssignDialogComponent implements OnInit {
     return this.userAssigned.map(user => user.id);
   }
 
-  public isOptionSelected(userId: number){
+  public isOptionSelected(userId: string){
     return this.userAssignedIds.includes(userId);
   }
 

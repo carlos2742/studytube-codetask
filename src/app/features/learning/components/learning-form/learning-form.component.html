@@ -2,7 +2,7 @@
   <div class="pb-2">
     <mat-form-field appearance="outline">
       <mat-label>Name*</mat-label>
-      <input matInput placeholder="Placeholder" formControlName="name">
+      <input matInput placeholder="Placeholder" formControlName="name" name="name">
       <mat-error *ngIf="name && name.invalid">You must enter a Name</mat-error>
     </mat-form-field>
   </div>

@@ -2,19 +2,19 @@ import {Learning, LEARNING_STATUS, User} from "./models";
 
 export const users: User[] = [
   {
-    id: 1,
+    id: 'uhumdr8ko',
     avatar: 'h1',
     name: 'John Doe',
     email: 'jdoe@gmail.com'
   },
   {
-    id: 2,
+    id: "4lu6l450j",
     avatar: 'w1',
     name: 'Ariella Valentine',
     email: 'avalentine@gmail.com'
   },
   {
-    id: 3,
+    id: "oxabanran",
     avatar: 'h2',
     name: 'Saul Fields',
     email: 'sfields@gmail.com'
@@ -23,19 +23,19 @@ export const users: User[] = [
 
 export const learnings: Learning[] = [
   {
-    id: 1,
+    id: "n4bjbuw72",
     name: 'Angular',
     status: LEARNING_STATUS.UNARCHIVED,
-    users:[1,2]
+    users:['uhumdr8ko', '4lu6l450j']
   },
   {
-    id: 2,
+    id: "ub2ee6wvm",
     name: 'Ruby on Rails',
     status: LEARNING_STATUS.UNARCHIVED,
-    users: [3]
+    users: ['oxabanran']
   },
   {
-    id:3,
+    id: "8pb71bd47",
     name: 'React',
     status: LEARNING_STATUS.ARCHIVED,
     users:[]

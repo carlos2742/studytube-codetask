@@ -20,6 +20,7 @@
         <button type="button" mat-icon-button
                 matTooltip="Learnings"
                 matTooltipPosition="left"
+                [class.invisible]="!hasLearnings(entity.id)"
                 (click)="showLearningDialog(entity)"><i class="fas fa-book"></i></button>
         <button type="button" mat-icon-button
                 matTooltip="Remove"

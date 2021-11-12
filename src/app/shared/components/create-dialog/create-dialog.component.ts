@@ -1,8 +1,9 @@
 import {
+  AfterViewInit,
   Component,
   ComponentFactoryResolver,
   ComponentRef, Inject,
-  OnDestroy,
+  OnDestroy, OnInit,
   Type,
   ViewChild,
   ViewContainerRef
@@ -26,17 +27,19 @@ export type CreateDialogData = {
   templateUrl: './create-dialog.component.html',
   styleUrls: ['./create-dialog.component.scss']
 })
-export class CreateDialogComponent implements OnDestroy{
+export class CreateDialogComponent implements AfterViewInit, OnDestroy{
 
   @ViewChild('container', {read: ViewContainerRef}) container: ViewContainerRef;
 
   private componentRef: ComponentRef<IFormComponent>;
   private subscription: Subscription;
+
   constructor(
     public dialogRef: MatDialogRef<CreateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: CreateDialogData,
-    private componentFactoryResolver: ComponentFactoryResolver)
-  {
+    private componentFactoryResolver: ComponentFactoryResolver){}
+
+  ngAfterViewInit(): void {
     this.subscription = this.dialogRef.afterOpened().subscribe(()=>{
       const {formComponent} = this.data;
       this.addFormComponent(formComponent);
@@ -48,12 +51,12 @@ export class CreateDialogComponent implements OnDestroy{
     this.subscription.unsubscribe();
   }
 
-  private addFormComponent(componentClass: Type<IFormComponent>){
+  public addFormComponent(componentClass: Type<IFormComponent>){
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
     this.componentRef = this.container.createComponent(componentFactory);
   }
 
-  private removeFormComponent(){
+  public removeFormComponent(){
     const index = this.container.indexOf(this.componentRef.hostView);
     this.container.remove(index);
   }

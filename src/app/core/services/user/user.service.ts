@@ -1,25 +1,22 @@
-import { Injectable } from '@angular/core';
-import {users} from "../../../models/data";
+import {Inject, Injectable} from '@angular/core';
 
 export type User = {
-  id: number;
+  id: string;
   avatar: string;
   name: string;
   email:string;
 };
+
+export const ID = () => Math.random().toString(36).substr(2,9);
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private readonly _data: User[];
+  constructor(@Inject('USER_DATA') private _data: User[]) {}
 
-  constructor() {
-    this._data = users;
-  }
-
-  public all(): User[]{
+  get all(): User[]{
     return this._data;
   }
 
@@ -29,9 +26,9 @@ export class UserService {
     let list;
 
     if(search === undefined || search === null){
-      list = this._data;
+      list = this.all;
     } else {
-      list = this._data.filter(item =>{
+      list = this.all.filter(item =>{
         return item.name.toLowerCase().includes(search.toLowerCase()) ||
           item.email.includes(search);
       });
@@ -43,20 +40,21 @@ export class UserService {
   }
 
   public create(payload: User):boolean{
-    payload.id = this._data.length+1;
-    this._data.push(payload);
+    payload.id = ID();
+    this.all.push(payload);
     return true;
   }
 
-  public remove(id: number): boolean | User[]{
-    const index = this._data.findIndex(item => item.id === id);
+  public remove(id: string): boolean{
+    const index = this.all.findIndex(item => item.id === id);
     if(index > -1){
-      return this._data.splice(index,1);
+      const result = this.all.splice(index,1);
+      return result.length > 0;
     }
     return false;
   }
 
-  public findManyById(usersId: number[]): User[]{
-    return this._data.filter(item => usersId.includes(item.id));
+  public findManyById(usersId: string[]): User[]{
+    return this.all.filter(item => usersId.includes(item.id));
   }
 }

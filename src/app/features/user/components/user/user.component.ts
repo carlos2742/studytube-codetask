@@ -77,13 +77,17 @@ export class UserComponent {
     this.dialog.open(LearningDialogComponent, {data:user});
   }
 
+  public hasLearnings(userId:string):boolean{
+    return this._learning.findByUserId(userId).length > 0;
+  }
+
   private _create(entity: User){
     if(this._user.create(entity)){
       this.loadData();
     }
   }
 
-  private _delete(id:number){
+  private _delete(id:string){
     if(this._user.remove(id)){
       this._learning.removeUser(id);
       this.loadData();

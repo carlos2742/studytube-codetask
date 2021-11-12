@@ -4,14 +4,14 @@ export enum LEARNING_STATUS{
 };
 
 export type Learning = {
-  id: number;
+  id: string;
   name: string;
   status: LEARNING_STATUS;
-  users: number[];
+  users: string[];
 };
 
 export type User = {
-  id: number;
+  id: string;
   avatar: string;
   name: string;
   email:string;

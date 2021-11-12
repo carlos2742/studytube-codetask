@@ -73,7 +73,7 @@ export class LearningComponent{
     this.dialog.open(AssignDialogComponent,{data:learning});
   }
 
-  public updateStatus(id:number, checked:boolean){
+  public updateStatus(id:string, checked:boolean){
     const status = checked ? LEARNING_STATUS.ARCHIVED : LEARNING_STATUS.UNARCHIVED;
     this._learning.updateStatus(id, status);
   }
@@ -88,7 +88,7 @@ export class LearningComponent{
     }
   }
 
-  private _delete(id:number){
+  private _delete(id:string){
     if(this._learning.remove(id)){
       this.loadData();
     }

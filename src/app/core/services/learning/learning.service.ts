@@ -1,16 +1,17 @@
-import { Injectable } from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Learning, LEARNING_STATUS} from "../../../models/models";
-import {learnings} from "../../../models/data";
+import {ID} from "../user/user.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class LearningService {
 
-  private readonly _data: Learning[];
 
-  constructor() {
-    this._data = learnings;
+  constructor(@Inject('LEARNING_DATA') private _data: Learning[]) {}
+
+  get all(): Learning[]{
+    return this._data;
   }
 
   public list(pageIndex: number, pageSize: number, search?:string): {data: Learning[], total:number}{
@@ -19,9 +20,9 @@ export class LearningService {
     let list;
 
     if(search === undefined || search === null){
-      list = this._data;
+      list = this.all;
     } else {
-      list = this._data.filter(item =>{
+      list = this.all.filter(item =>{
         return item.name.toLowerCase().includes(search.toLowerCase())
       });
     }
@@ -32,13 +33,13 @@ export class LearningService {
   }
 
   public create(payload: Learning): boolean{
-    payload.id = this._data.length+1;
+    payload.id = ID();
     payload.users = [];
-    this._data.push(payload);
+    this.all.push(payload);
     return true;
   }
 
-  public updateStatus(id: number, value: LEARNING_STATUS):boolean{
+  public updateStatus(id: string, value: LEARNING_STATUS):boolean{
     const entity = this.findById(id);
     if(entity){
       entity.status = value;
@@ -47,10 +48,10 @@ export class LearningService {
     return false;
   }
 
-  public remove(id: number): boolean{
+  public remove(id: string): boolean{
     const index = this.findIndexById(id);
     if(index > -1){
-      const deletedElements = this._data.splice(index,1);
+      const deletedElements = this.all.splice(index,1);
       if(deletedElements.length > 0){
         return true;
       }
@@ -61,14 +62,19 @@ export class LearningService {
   /**
    *  Remove an user from all the learnings
    * */
-  public removeUser(userId: number){
-    let entities = this._data.filter(item => item.users.includes(userId));
+  public removeUser(userId: string):boolean{
+    let entities = this.all.filter(item => item.users.includes(userId));
+    if(entities.length === 0){
+      return false;
+    }
+
     entities.forEach(item => {
       item.users = item.users.filter(id => id !== userId);
-    })
+    });
+    return true;
   }
 
-  public assignUsers(id:number, usersId: number[]):boolean{
+  public assignUsers(id:string, usersId: string[]):boolean{
     const entity = this.findById(id);
     if(entity){
       entity.users = usersId;
@@ -77,18 +83,18 @@ export class LearningService {
     return false;
   }
 
-  public findById(id:number): Learning | undefined{
-    return this._data.find((item) => item.id === id);
+  public findById(id:string): Learning | undefined{
+    return this.all.find((item) => item.id === id);
   }
 
   /**
    * Return the Learnings assigned to a user.
    * */
-  public findByUserId(userId:number): Learning[]{
-    return this._data.filter(item => item.users.includes(userId));
+  public findByUserId(userId:string): Learning[]{
+    return this.all.filter(item => item.users.includes(userId));
   }
 
-  private findIndexById(id:number): number{
-    return this._data.findIndex((item) => item.id === id);
+  private findIndexById(id:string): number{
+    return this.all.findIndex((item) => item.id === id);
   }
 }
